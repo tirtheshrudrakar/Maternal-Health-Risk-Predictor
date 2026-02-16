@@ -1,4 +1,4 @@
-## Maternal Health Risk Predictor is a simple, practical machine learning project that predicts whether a pregnant patient is at low, medium, or high health risk using routine clinical data.
+# Maternal Health Risk Predictor is a simple, practical machine learning project that predicts whether a pregnant patient is at low, medium, or high health risk using routine clinical data.
 
 # What the Project Does (In Simple Terms)
 
