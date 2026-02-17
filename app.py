@@ -5,18 +5,18 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 
-st.markdown("<div class='ti'>MEDI<div class='t2'>X</div>A</div>", unsafe_allow_html=True)
+st.markdown("<div class='ti'>CLINE<div class='t2'>X</div>IA</div>", unsafe_allow_html=True)
 
-# Page configuration
+
 st.set_page_config(
     
-    page_title="Medixa",
+    page_title="Clinexia",
 
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+
 st.markdown("""
     <style>
            
@@ -200,14 +200,14 @@ with button_col1:
 with button_col2:
     dashboard_button = st.button("View Dashboard", use_container_width=True)
 
-# Function to create health dashboard
+
 def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_val, hr_val):
     """Create comprehensive health parameter dashboard"""
     
     st.markdown("---")
     st.header("Health Parameters Dashboard")
     
-    # Reference ranges
+
     reference_ranges = {
         'Age': {'min': 18, 'max': 45, 'optimal_min': 20, 'optimal_max': 35},
         'Systolic BP': {'min': 90, 'max': 120, 'optimal_min': 100, 'optimal_max': 115},
@@ -217,7 +217,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
         'Heart Rate': {'min': 60, 'max': 100, 'optimal_min': 70, 'optimal_max': 85}
     }
     
-    # Current values
+  
     current_values = {
         'Age': age_val,
         'Systolic BP': systolic_val,
@@ -228,7 +228,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
     }
     
    
-    # Comparison with normal ranges - Bar chart
+
     st.subheader("Parameter Comparison with Normal Ranges")
     
     comparison_data = []
@@ -247,7 +247,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
     
     fig = go.Figure()
     
-    # Add bars for normal range
+  
     fig.add_trace(go.Bar(
         name='Normal Min',
         x=comp_df['Parameter'],
@@ -264,7 +264,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
         opacity=0.6
     ))
     
-    # Add line for current values
+ 
     fig.add_trace(go.Scatter(
         name='Your Values',
         x=comp_df['Parameter'],
@@ -287,7 +287,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
     
    
     
-    # Health status summary table
+
     st.subheader("Health Status Summary")
     
     status_data = []
@@ -319,7 +319,7 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
     normalized_values = []
     for param, value in current_values.items():
         ranges = reference_ranges[param]
-        # Normalize: 100 = optimal, 50 = acceptable, 0 = out of range
+        
         if ranges['optimal_min'] <= value <= ranges['optimal_max']:
             normalized = 100
         elif ranges['min'] <= value <= ranges['max']:
@@ -328,7 +328,6 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
             normalized = 30
         normalized_values.append(normalized)
 
-    # Health insights
     st.subheader(" Health Insights")
     
     col1, col2, col3 = st.columns(3)
@@ -355,12 +354,12 @@ def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_v
             delta="Excellent" if overall_score >= 90 else "Good" if overall_score >= 70 else "Fair"
         )
 
-# Handle Predict button
+
 if predict_button:
     
-    # Validate inputs
+   
     try:
-        # Convert all inputs to float
+       
         age_val = float(age)
         systolic_val = float(systolic_bp)
         diastolic_val = float(diastolic_bp)
@@ -368,7 +367,7 @@ if predict_button:
         temp_val = float(body_temp)
         hr_val = float(heart_rate)
         
-        # Basic validation
+       
         errors = []
         
         if not (10 <= age_val <= 70):
@@ -389,7 +388,7 @@ if predict_button:
             for error in errors:
                 st.error(f"• {error}")
         else:
-            # Use your predictor class
+           
             result = predictor.predict(
                 age=age_val,
                 systolic_bp=systolic_val,
@@ -399,23 +398,22 @@ if predict_button:
                 heart_rate=hr_val
             )
             
-            # Extract results (they come as strings with % sign)
+         
             risk_level = result['risk_level']
-            confidence_str = result['confidence']  # e.g., "95.67%"
-            probabilities_dict = result['probabilities']  # e.g., {'low risk': '95.67%', ...}
+            confidence_str = result['confidence']  
+            probabilities_dict = result['probabilities']  
             
-            # Convert confidence string to float for display
+           
             confidence = confidence_str
 
-            
-            # Convert probability strings to floats
+      
             prob_values = {k: float(v.rstrip('%')) for k, v in probabilities_dict.items()}
             
-            # Display results
+        
             st.markdown("---")
             st.header(" Prediction Results")
             
-            # Create three columns for results
+   
             res_col1, res_col2, res_col3 = st.columns(3)
             
             with res_col1:
@@ -433,7 +431,7 @@ if predict_button:
                 else:
                     st.metric("Priority", " NORMAL")
             
-            # Risk level specific message
+      
             if 'high' in risk_level.lower():
                 st.markdown("""
                 <div class='risk-high'>
@@ -482,17 +480,16 @@ if predict_button:
                 </div>
                 """, unsafe_allow_html=True)
             
-            # Probability gauge chart
             st.subheader("Risk Probability Distribution")
             
-            # Find low risk probability (handle different naming conventions)
+        
             low_risk_prob = 0
             for key, val in prob_values.items():
                 if 'low' in key.lower():
                     low_risk_prob = val
                     break
             
-            # Create gauge chart
+        
             fig = go.Figure(go.Indicator(
                 mode="gauge+number",
                 value=low_risk_prob,
@@ -519,18 +516,16 @@ if predict_button:
             
             fig.update_layout(height=400)
             st.plotly_chart(fig, use_container_width=True)
-            
-            # Detailed probabilities
+      
             st.subheader(" Detailed Probability Breakdown")
             
-            # Create DataFrame from probabilities
+            
             prob_df = pd.DataFrame({
                 'Risk Level': list(prob_values.keys()),
                 'Probability (%)': list(prob_values.values())
             }).sort_values('Probability (%)', ascending=False)
             
-            # Create bar chart
-            # Determine colors based on risk level names
+   
             colors = []
             for risk in prob_df['Risk Level']:
                 if 'low' in risk.lower():
@@ -561,7 +556,7 @@ if predict_button:
             
             st.plotly_chart(fig2, use_container_width=True)
             
-            # Show probabilities in table format
+  
             st.subheader("Probability Table")
             prob_table = pd.DataFrame({
                 'Risk Level': list(probabilities_dict.keys()),
@@ -569,7 +564,7 @@ if predict_button:
             })
             st.table(prob_table)
             
-            # Input summary
+           
             st.subheader(" Input Summary")
             input_summary = pd.DataFrame({
                 'Parameter': ['Age', 'Systolic BP', 'Diastolic BP', 'Blood Sugar', 'Body Temperature', 'Heart Rate'],
@@ -586,10 +581,10 @@ if predict_button:
         st.error(f" **Error occurred:** {str(e)}")
         st.info("Please check your inputs and try again.")
 
-# Handle Dashboard button
+
 if dashboard_button:
     try:
-        # Convert inputs
+      
         age_val = float(age)
         systolic_val = float(systolic_bp)
         diastolic_val = float(diastolic_bp)
@@ -597,7 +592,7 @@ if dashboard_button:
         temp_val = float(body_temp)
         hr_val = float(heart_rate)
         
-        # Validate
+        
         errors = []
         
         if not (10 <= age_val <= 70):
@@ -618,7 +613,7 @@ if dashboard_button:
             for error in errors:
                 st.error(f"• {error}")
         else:
-            # Show dashboard
+           
             create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_val, hr_val)
     
     except ValueError:
@@ -628,8 +623,13 @@ if dashboard_button:
     except Exception as e:
         st.error(f" **Error occurred:** {str(e)}")
     
-    
-# Footer
+FEEDBACK_FORM_URL = "https://forms.gle/UEoUWFHfLZ3HxbX96"
+
+if st.button("Give Feedback"):
+    st.markdown(f"[Click here to open feedback form]({FEEDBACK_FORM_URL})")
+
+
+
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: gray;'>
