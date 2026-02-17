@@ -637,6 +637,6 @@ st.markdown("""
     It is NOT a substitute for professional medical advice, diagnosis, or treatment.</p>
     <p>Always seek the advice of your physician or other qualified health provider with any questions 
     regarding your medical condition.</p>
-    <p>Made by Vertexa , with love , for Maternal Health Awareness | © 2026</p>
+    <p>Made by Clinexia , for Maternal Health Awareness | © 2026</p>
 </div>
 """, unsafe_allow_html=True)
