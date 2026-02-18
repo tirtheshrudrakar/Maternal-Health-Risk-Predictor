@@ -5,12 +5,12 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 
-st.markdown("<div class='ti'>CLINE<div class='t2'>X</div>IA</div>", unsafe_allow_html=True)
+st.markdown("<div class='ti'>CLINE<div class='t2'>X</div>I</div>", unsafe_allow_html=True)
 
 
 st.set_page_config(
     
-    page_title="Clinexia",
+    page_title="Clinexi",
 
     layout="wide",
     initial_sidebar_state="expanded"
@@ -637,6 +637,6 @@ st.markdown("""
     It is NOT a substitute for professional medical advice, diagnosis, or treatment.</p>
     <p>Always seek the advice of your physician or other qualified health provider with any questions 
     regarding your medical condition.</p>
-    <p>Made by Clinexia , for Maternal Health Awareness | © 2026</p>
+    <p>Made by Clinexi , for Maternal Health Awareness | © 2026 | Author: Tirthesh Rudrakar</p>
 </div>
 """, unsafe_allow_html=True)
