@@ -21,14 +21,9 @@ st.markdown("""
     <style>
            
     @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
-    .st-emotion-cache-13k62yr {
-    position: absolute;
-    background: linear-gradient(to bottom, #000000, #af66ff);
-    color: rgb(250, 250, 250);
-    inset: 0px;
-    color-scheme: dark;
-    overflow: hidden;
-}
+   [data-testid="stApp"] {
+    background: linear-gradient(to bottom, #414ba9, #af66ff);
+    }
     .main {
         padding: 2rem;
     }
