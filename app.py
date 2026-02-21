@@ -85,6 +85,10 @@ st.markdown("""
         border-radius: 10px;
         border-left: 5px solid #00C851;
     }
+    .st-emotion-cache-1s4g1qq {
+        background-color: #C399FF;
+            color: black;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -113,6 +117,27 @@ with st.sidebar:
     - **Mid Risk**: Some attention needed
     - **High Risk**: Immediate medical attention required
     """)
+
+    st.markdown("---")
+    st.header("Unit Converter")
+    
+    converter_type = st.selectbox(
+        "Convert:",
+        ["Blood Sugar (mg/dL to mmol/L)", 
+         "Temperature (°C to °F)"]
+    )
+    
+    if converter_type == "Blood Sugar (mg/dL to mmol/L)":
+        mgdl = st.number_input("Enter Blood Sugar in mg/dL:", min_value=0.0, step=1.0)
+        if mgdl > 0:
+            mmol = mgdl / 18
+            st.success(f"**{mgdl} mg/dL = {mmol:.1f} mmol/L**")
+    
+    else:  
+        celsius = st.number_input("Enter Temperature in °C:", min_value=0.0, step=0.1)
+        if celsius > 0:
+            fahrenheit = (celsius * 9/5) + 32
+            st.success(f"**{celsius}°C = {fahrenheit:.1f}°F**")    
     
     st.header(" Model Info")
     st.success(f"""
@@ -160,12 +185,50 @@ with col1:
         placeholder="Enter systolic BP (e.g., 120)",
         help="Upper number in blood pressure reading"
     )
+    with st.expander(" What is Systolic BP?"):
+        st.markdown("""
+        **What is Systolic Blood Pressure?**
+        - It's the **TOP/FIRST number** in your BP reading
+        - Example: In "120/80", **120** is systolic
+        - Measures pressure when heart beats
+        
+        **How to Measure:**
+        1. Sit quietly for 5 minutes
+        2. Place BP cuff on upper arm
+        3. Press start on BP monitor
+        4. Note the **first/higher number**
+        
+        **Normal Range:** 90-120 mmHg
+        
+        **Reading Together:**
+        - BP monitor shows: "120/80"
+        - Enter 120 in Systolic field
+        - Enter 80 in Diastolic field
+        """)
     
     diastolic_bp = st.text_input(
         "Diastolic Blood Pressure (mmHg)",
         placeholder="Enter diastolic BP (e.g., 80)",
         help="Lower number in blood pressure reading"
     )
+    with st.expander(" What is Diastolic BP?"):
+        st.markdown("""
+        **What is Diastolic Blood Pressure?**
+        - It's the **BOTTOM/SECOND number** in your BP reading
+        - Example: In "120/80", **80** is diastolic
+        - Measures pressure when heart rests
+        
+        **How to Measure:**
+        Same device as systolic (both measured together)
+        - The **second/lower number** on the BP monitor
+        
+        **Normal Range:** 60-80 mmHg
+        
+        **Reading Together:**
+        - BP monitor shows: "120/80"
+        - Enter 120 in Systolic field
+        - Enter 80 in Diastolic field
+        """)
 
 with col2:
     st.subheader("Health Parameters")
@@ -175,30 +238,93 @@ with col2:
         placeholder="Enter blood sugar (e.g., 7.0)",
         help="Blood glucose level in mmol/L"
     )
+    with st.expander(" What is Blood Sugar?"):
+        st.markdown("""
+        **What is Blood Sugar?**
+        - Glucose level in your blood
+        - Important for pregnancy health
+        
+        **How to Measure:**
+        1. Get a glucometer (₹500-1500)
+        2. Prick finger with lancet
+        3. Put blood drop on test strip
+        4. Read number on device
+        
+        **Units:**
+        - This tool uses **mmol/L**
+        - If your device shows mg/dL:
+          - Divide by 18 to convert
+          - Example: 126 mg/dL ÷ 18 = 7.0 mmol/L
+        
+        **Normal Range (Fasting):** 6.0-7.8 mmol/L
+        
+        **Where to Measure:**
+        - Home glucometer
+        - Pharmacy/Lab (₹20-50)
+        - Doctor's office
+        """)
     
     body_temp = st.text_input(
         "Body Temperature (°F)",
         placeholder="Enter temperature (e.g., 98.0)",
         help="Body temperature in Fahrenheit"
     )
+    with st.expander(" What is Body Temperature?"):
+        st.markdown("""
+        **How to Measure:**
+        1. Use digital thermometer
+        2. Place under tongue OR in armpit
+        3. Wait for beep (30-60 seconds)
+        4. Read temperature
+        
+        **Units:**
+        - This tool uses **Fahrenheit (°F)**
+        - If your thermometer shows Celsius:
+          - Formula: (°C × 9/5) + 32 = °F
+          - Example: 37°C = 98.6°F
+        
+        **Normal Range:** 97.0-99.0°F
+       """ )
     
     heart_rate = st.text_input(
         "Heart Rate (bpm)",
         placeholder="Enter heart rate (e.g., 75)",
         help="Heartbeats per minute"
     )
+    with st.expander(" What is Heart Rate?"):
+        st.markdown("""
+        **How to Measure (Manual):**
+        1. Sit quietly for 5 minutes
+        2. Place 2 fingers on wrist (below thumb)
+        3. Feel the pulse
+        4. Count beats for 60 seconds
+        OR count for 15 seconds and multiply by 4
+        
+        **Using Device:**
+        - Smart watch (Apple Watch, Fitbit)
+        - Pulse oximeter (₹300-1000)
+        - BP monitor (shows HR too)
+        
+        **Normal Range:** 60-100 bpm
+        **During Pregnancy:** 70-90 bpm is common
+        
+        **Tip:** Measure when resting, not after exercise
+        """)
 
-# Add some spacing
+
 st.markdown("---")
 
-# Create two buttons side by side
-button_col1, button_col2 = st.columns(2)
+
+button_col1, button_col2 , button_col3 = st.columns(3)
 
 with button_col1:
     predict_button = st.button("Predict Risk Level", use_container_width=True)
 
 with button_col2:
     dashboard_button = st.button("View Dashboard", use_container_width=True)
+
+with button_col3:
+    help_button = st.button("Help ", use_container_width=True)
 
 
 def create_health_dashboard(age_val, systolic_val, diastolic_val, bs_val, temp_val, hr_val):
@@ -624,7 +750,440 @@ if dashboard_button:
         st.error(f" **Error occurred:** {str(e)}")
     
 FEEDBACK_FORM_URL = "https://forms.gle/UEoUWFHfLZ3HxbX96"
+if help_button:
+  st.session_state.show_help = True
 
+
+if st.session_state.get('show_help', False):
+    
+    # Close button
+    col1, col2, col3 = st.columns([6, 1, 1])
+    with col3:
+        if st.button(" Close"):
+            st.session_state.show_help = False
+            st.rerun()
+    st.markdown("---")
+    st.header(" Quick Guide")
+    
+    
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "ℹ About", 
+        " How to Use", 
+        " Parameters Guide",
+        "FAQ"
+    ])
+    
+   
+    
+    with tab1:
+        st.subheader("About MaternalCare AI")
+        
+        st.info("""
+        **MaternalCare AI** is an AI-powered tool that predicts maternal health 
+        risk levels during pregnancy using Machine Learning.
+        """)
+        
+        
+        st.markdown("""
+            **Purpose:**
+            - Early risk detection
+            - Health awareness
+            - Educational tool
+            - Preliminary assessment
+            
+            ** Important:**
+            - NOT a medical diagnosis
+            - For educational use only
+            - Always consult doctors
+            - Complement to medical care
+            """)
+        
+        
+        
+        st.success("""
+        ** Developer:** Tirthesh Rudrakar | B.Tech AI & Data Science | 2026  
+        
+        """)
+    
+   
+    with tab2:
+        st.subheader("How to Use This Tool")
+        
+        st.markdown("""
+        ### Quick Steps
+        
+        **1. Gather Your Measurements**
+        - Age
+        - Blood Pressure (top & bottom numbers)
+        - Blood Sugar
+        - Body Temperature
+        - Heart Rate
+        
+        **2. Enter Values**
+        - Fill all input fields
+        - Check values are correct
+        - Use reference ranges in sidebar
+        
+        **3. Get Results**
+        - Click " Predict Risk Level" for AI prediction
+        - OR click " View Dashboard" for visual analysis
+        
+        **4. Understand & Act**
+        - Review your risk level
+        - Read recommendations
+        - Consult healthcare provider
+        """)
+        
+        st.markdown("---")
+        
+        # Action guide
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.success("""
+            **Low Risk**
+            
+            - Continue prenatal care
+            - Maintain healthy habits
+            - Regular checkups
+            - Stay hydrated
+            """)
+        
+        with col2:
+            st.warning("""
+            **Mid Risk**
+            
+            - See doctor soon
+            - Monitor daily
+            - Follow medical advice
+            - Track changes
+            """)
+        
+        with col3:
+            st.error("""
+            **High Risk**
+        
+            - Contact doctor NOW
+            - Don't delay
+            - Emergency: 102
+            - Seek immediate care
+            """)
+    
+    with tab3:
+        st.subheader("Health Parameters Guide")
+        
+        # Create a summary table
+        st.markdown("""
+        ### Quick Reference
+        """)
+        
+        params_data = {
+            'Parameter': [
+                'Age',
+                'Systolic BP',
+                'Diastolic BP',
+                'Blood Sugar',
+                'Body Temp',
+                'Heart Rate'
+            ],
+            'Normal Range': [
+                '18-35 years',
+                '90-120 mmHg',
+                '60-80 mmHg',
+                '6.0-7.8 mmol/L',
+                '97-99 °F',
+                '60-100 bpm'
+            ],
+            'How to Measure': [
+                'Your age',
+                'BP monitor (top number)',
+                'BP monitor (bottom number)',
+                'Glucometer or lab test',
+                'Digital thermometer',
+                'Pulse or device'
+            ]
+        }
+        
+        st.table(pd.DataFrame(params_data))
+        
+        st.markdown("---")
+        
+        # Detailed expandable guides
+        with st.expander("Age - Why It Matters"):
+            st.markdown("""
+            **What:** Your current age in years
+            
+            **Ideal Range:** 20-35 years
+            
+            **Why Important:**
+            - Under 18: Higher risk
+            - 18-35: Optimal
+            - 35+: Requires monitoring
+            - 40+: Higher risk
+            """)
+        
+        with st.expander("Blood Pressure - How to Measure"):
+            st.markdown("""
+            **What:** Pressure in arteries (two numbers)
+            
+            **Device:** Digital BP monitor (₹500-2000) OR free at pharmacy
+            
+            **Reading Example:** Display shows "120/80"
+            - **120** = Systolic (enter in first field) 
+            - **80** = Diastolic (enter in second field) 
+            
+            **Steps:**
+            1. Sit quietly for 5 minutes
+            2. Place cuff on upper arm
+            3. Press "Start"
+            4. Note both numbers
+            
+            **Normal:**
+            - Systolic: 90-120
+            - Diastolic: 60-80
+            """)
+        
+        with st.expander(" Blood Sugar - Unit Conversion"):
+            st.markdown("""
+            **What:** Glucose level in blood
+            
+            **This tool uses:** mmol/L  
+            **Most devices show:** mg/dL
+            
+            **Convert:** mg/dL ÷ 18 = mmol/L
+            
+            **Quick Reference:**
+            - 90 mg/dL = 5.0 mmol/L
+            - 108 mg/dL = 6.0 mmol/L
+            - 126 mg/dL = 7.0 mmol/L Normal
+            - 144 mg/dL = 8.0 mmol/L
+            - 180 mg/dL = 10.0 mmol/L
+            
+            **Measure:**
+            - Glucometer at home (₹500-1500)
+            - Lab test (₹20-100)
+            - Pharmacy
+            
+            **Normal:** 6.0-7.8 mmol/L (fasting)
+            """)
+        
+        with st.expander("Temperature - Unit Conversion"):
+            st.markdown("""
+            **What:** Body temperature
+            
+            **This tool uses:** Fahrenheit (°F)  
+            **If yours shows:** Celsius (°C)
+            
+            **Convert:** (°C × 1.8) + 32 = °F
+            
+            **Quick Reference:**
+            - 36.0°C = 96.8°F
+            - 36.5°C = 97.7°F
+            - 37.0°C = 98.6°F  Normal
+            - 37.5°C = 99.5°F
+            - 38.0°C = 100.4°F (Fever)
+            
+            **Measure:**
+            - Digital thermometer (₹100-500)
+            - Under tongue or armpit
+            - Wait for beep
+            
+            **Normal:** 97-99°F
+            """)
+        
+        with st.expander(" Heart Rate - How to Measure"):
+            st.markdown("""
+            **What:** Heartbeats per minute (bpm)
+            
+            **Manual Method (Free):**
+            1. Find pulse on wrist (below thumb)
+            2. Count beats for 60 seconds
+            OR count 15 seconds × 4
+            
+            **Using Devices:**
+            - Smart watch
+            - Pulse oximeter (₹300-1000)
+            - BP monitor (shows HR too)
+            
+            **Tips:**
+            - Measure while resting
+            - Not after exercise
+            - Sit quietly first
+            
+            **Normal:** 60-100 bpm  
+            **During pregnancy:** 70-90 bpm common
+            """)
+        
+        st.markdown("---")
+        st.info("""
+        **Don't have measurements?**
+        
+        Visit for FREE/cheap measurements:
+        -  Any pharmacy (BP free)
+        -  Government health center (all free)
+        -  Doctor's clinic
+        -  Pathology lab (₹200-500 full panel)
+        """)
+    
+   
+    with tab4:
+        st.subheader("Frequently Asked Questions")
+        
+        with st.expander(" Is this a medical diagnosis?"):
+            st.markdown("""
+            **No.** This is an AI prediction tool for educational purposes only.
+            
+            - NOT a replacement for doctors
+            - NOT a clinical diagnostic tool
+            - Use as preliminary awareness
+            - Always consult healthcare professionals
+            """)
+        
+        with st.expander(" How accurate is this?"):
+            st.markdown("""
+            **95%+ accuracy on test data.**
+            
+            However:
+            - Accuracy varies per individual
+            - Depends on input quality
+            - Not 100% guaranteed
+            - Use as one data point, not sole decision maker
+            """)
+        
+        with st.expander(" What do the risk levels mean?"):
+            st.markdown("""
+            **Low Risk (Green):**
+            - Parameters mostly normal
+            - Continue regular care
+            - Maintain healthy habits
+            
+            **Mid Risk (Orange):**
+            - Some elevated parameters
+            - Needs medical attention
+            - Schedule doctor visit soon
+            
+            **High Risk (Red):**
+            - Multiple concerning parameters
+            - Requires immediate attention
+            - Contact doctor NOW
+            - Don't delay
+            """)
+        
+        with st.expander(" Can I use this during pregnancy?"):
+            st.markdown("""
+            **Yes**, but with important notes:
+            
+            - Use for monitoring trends
+            - Complement regular prenatal care
+            - Share results with your doctor
+            
+            - Don't skip doctor visits
+            - Don't self-diagnose
+            - Don't change medications without doctor
+            """)
+        
+    with st.expander(" How often should I check?"):
+            st.markdown("""
+            **General Guidance:**
+            
+            - **Low Risk:** Once a week
+            - **Mid Risk:** Every 2-3 days
+            - **High Risk:** Consult doctor for guidance
+            
+            **Best Practice:**
+            - Same time each day
+            - Track trends over time
+            - Don't obsess over single readings
+            """)
+        
+    with st.expander(" What if I get High Risk result?"):
+            st.markdown("""
+            **Don't Panic! Here's what to do:**
+            
+            1. **Stay Calm** - It's a preliminary assessment
+            2. **Verify Inputs** - Check all values are correct
+            3. **Contact Doctor** - Share results with healthcare provider
+            4. **Don't Self-Treat** - Wait for professional advice
+            5. **Monitor** - Keep track of symptoms
+            
+            **Emergency Signs (Call 102):**
+            - Severe headache
+            - Vision changes
+            - Severe abdominal pain
+            - Difficulty breathing
+            - Chest pain
+            """)
+        
+    with st.expander("Is my data stored or shared?"):
+            st.markdown("""
+            **No. Your privacy is protected.**
+            
+            - Predictions processed in real-time
+            - No data saved to database
+            - No third-party sharing
+            - Completely private
+            - Local processing only
+            """)
+        
+    with st.expander(" What if values keep changing?"):
+            st.markdown("""
+            **Normal variation happens.**
+            
+            - BP changes throughout the day
+            - Temperature fluctuates
+            - HR varies with activity
+            
+            **Best Practice:**
+            - Measure consistently (same time)
+            - Track trends, not single readings
+            - Compare day-to-day averages
+            - Consult doctor if persistent changes
+            """)
+        
+    with st.expander(" Can I trust AI for health decisions?"):
+            st.markdown("""
+            **AI is a TOOL, not a doctor.**
+            
+            **What AI Can Do:**
+            - Identify patterns in data
+            - Provide preliminary assessment
+            - Alert to potential concerns
+            - Track trends over time
+            
+            **What AI Cannot Do:**
+            - Replace medical expertise
+            - Consider full medical history
+            - Perform physical examination
+            - Make treatment decisions
+            
+            **Bottom Line:** Use AI + Doctor = Best care
+            """)
+         
+    with st.expander(" Who should use this tool?"):
+            st.markdown("""
+            **Ideal Users:**
+            - Pregnant women monitoring health
+            - Those planning pregnancy
+            - Healthcare students (learning)
+            - Anyone curious about health parameters
+            
+            **Who Should Be Cautious:**
+            - High-risk pregnancies (doctor supervision essential)
+            - Pre-existing medical conditions
+            - Those prone to health anxiety
+            
+            **Remember:** This complements, doesn't replace, medical care
+            """)
+        
+            st.markdown("---")
+            st.success("""
+               **Still have questions?**  
+        
+               Contact: clinexi@gmail.com  
+         
+             """)
+    
+    
 if st.button("Give Feedback"):
     st.markdown(f"[Click here to open feedback form]({FEEDBACK_FORM_URL})")
 
@@ -637,6 +1196,6 @@ st.markdown("""
     It is NOT a substitute for professional medical advice, diagnosis, or treatment.</p>
     <p>Always seek the advice of your physician or other qualified health provider with any questions 
     regarding your medical condition.</p>
-    <p>Made by Clinexi , for Maternal Health Awareness | © 2026 | Author: Tirthesh Rudrakar</p>
+    <p>Made by Clinexi , with love , for Maternal Health Awareness | © 2026 | Author : Tirthesh Rudrakar </p>
 </div>
 """, unsafe_allow_html=True)
